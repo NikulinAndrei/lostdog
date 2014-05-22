@@ -1,0 +1,31 @@
+@( reqs: List[models.LostRequest])
+@main() {
+
+<div class="container">
+    <h1>Tere tulemast kadunud loomade portaali!</h1>
+    <p>Sul on kadunud koer? Anna sellest teada!</p>
+    <p><a href="@routes.Lost.create"
+          class="btn btn-primary btn-large">Teavitan</a></p>
+</div>
+
+<div class="container">
+    <!-- Example row of columns -->
+    @reqs.map { r =>
+        <div class="col-md-4">
+            <h3>
+                <a href="@routes.Lost.showUpdate( r.id.get )">
+                    @r.title
+                </a>
+            </h3>
+            <p>
+                @{ val imgHref = "photos/koer" + (r.id.get%3 +1)+".jpg" }
+                <img class="medium" src="@routes.Assets.at("photos/koer" + (r.id.get%3 +1)+".jpg")"/>
+            </p>
+        </div>
+    }
+
+
+ </div>
+
+
+}

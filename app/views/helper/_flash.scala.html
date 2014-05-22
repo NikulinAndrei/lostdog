@@ -1,0 +1,7 @@
+@(flash: play.api.mvc.Flash)
+
+@flash.get("success").map { message =>
+<div class="alert alert-success">
+    @message
+</div>
+}

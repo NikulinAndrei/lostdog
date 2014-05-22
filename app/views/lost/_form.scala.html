@@ -1,0 +1,12 @@
+@(lostForm: Form[LostRequest])( buttons: Html )
+
+@import helper.bootstrap._
+
+@helper.inputText(lostForm("title"), '_label->"Tiitel", 'class->"form-control")
+@helper.textarea(lostForm("descr"), '_label->"Teade", 'class->"form-control")
+@helper.inputDate(field = lostForm("lostAt"), '_label -> "Millal kadus", 'class->"form-control")
+<div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+       @buttons
+    </div>
+</div>
