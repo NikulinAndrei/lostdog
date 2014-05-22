@@ -48,6 +48,17 @@ object LostRequest{
     }
   }
 
+  def update(id: Long, lost: LostRequest) ={
+    DB.withConnection{ implicit connection =>
+      SQL("update lost_req set title={title}, descr={descr}, lost_at={when}  where id={id}").
+        on('title->lost.title,
+        'descr -> lost.descr,
+        'when -> lost.lostAt,
+        'id -> id
+      ).executeUpdate
+    }
+  }
+
   def list(cnt: Int) ={
     DB.withConnection{ implicit connection =>
       SQL(

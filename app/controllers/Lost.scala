@@ -44,5 +44,13 @@ object Lost extends Controller {
     }.getOrElse( NotFound )
   }
 
-  def update( id: Long) = TODO
+  def update( id: Long) = Action{implicit request =>
+    lostForm.bindFromRequest().fold(
+      formWithErrors => BadRequest( views.html.lost.update(id, formWithErrors) ),
+      lostReq =>{
+        LostRequest.update(id, lostReq )
+        Redirect( routes.Lost.showUpdate(id)).flashing("success" -> "Teade on edukalt muudetud")
+      }
+    )
+  }
 }
