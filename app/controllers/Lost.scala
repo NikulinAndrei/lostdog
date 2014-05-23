@@ -5,8 +5,11 @@ import play.api.data.{Form}
 import play.api.data.Forms._
 import anorm.{Pk, NotAssigned}
 import play.api.data.format.Formats._
-import models.LostRequest
+import models.{LostRequestImg, LostRequest}
 import java.util.Date
+import java.io.File
+import services.FileService
+import scala.util.Random
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,6 +24,7 @@ object Lost extends Controller {
       "title" -> nonEmptyText,
       "descr" -> nonEmptyText,
       "lostAt" -> of[Date]
+      //,"picture" -> ignored( play.api.mvc.MultipartFormData.FilePart[play.api.libs.Files.TemporaryFile] ).verifying("Pildi fail on valimata!", _.isDefined)
     )(LostRequest.apply)(LostRequest.unapply)
   )
 
@@ -28,15 +32,18 @@ object Lost extends Controller {
     Ok( views.html.lost.create(lostForm) )
   }
 
-  def insert = Action{implicit request =>
+  def insert = Action(parse.multipartFormData){implicit request =>
     lostForm.bindFromRequest().fold(
       formWithErrors => BadRequest( views.html.lost.create(formWithErrors) ),
       lostReq =>{
+        //request.body.file("picture").get.ref.moveTo(new File("/tmp/images/"+new Random().nextLong() +".jpg"))
         val id: Long = LostRequest.insert( lostReq )
         Redirect( routes.Lost.showUpdate(id)).flashing("success" -> "Uus teade on edukalt sisestatud")
       }
     )
   }
+
+
 
   def showUpdate( id: Long) = Action{ implicit  request =>
     LostRequest.getById( id ).map{ o =>
@@ -51,6 +58,19 @@ object Lost extends Controller {
         LostRequest.update(id, lostReq )
         Redirect( routes.Lost.showUpdate(id)).flashing("success" -> "Teade on edukalt muudetud")
       }
+    )
+  }
+
+  def uploadImage(id:Long) = Action(parse.multipartFormData) { implicit request =>
+    println("Uploading")
+    request.body.file("picture").map { file =>
+      val filename = new FileService().persistFile( file, id)
+      println("persisted as "+filename)
+      val imgId = LostRequestImg.insert( new LostRequestImg( reqId=id, filename=filename) )
+      println("inserted as "+imgId)
+      Redirect( routes.Lost.showUpdate(id)).flashing("success" -> "Pilt on lisatud")
+    }.getOrElse(
+      Redirect( routes.Lost.showUpdate(id)).flashing("success" -> "Pilti ei ole")
     )
   }
 }

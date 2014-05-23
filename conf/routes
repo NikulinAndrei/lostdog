@@ -6,10 +6,11 @@
 GET     /                           controllers.Application.index
 
 #Lost pages
-GET     /lost/new                controllers.Lost.create
-POST    /lost/new                controllers.Lost.insert
+GET     /lost/new                 controllers.Lost.create
+POST    /lost/new                 controllers.Lost.insert
 GET     /lost/update/:id          controllers.Lost.showUpdate(id:Long)
 POST    /lost/update/:id          controllers.Lost.update(id:Long)
+POST    /lost/uploadimage/:id     controllers.Lost.uploadImage(id:Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

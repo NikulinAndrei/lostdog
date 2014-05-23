@@ -7,10 +7,13 @@
 <h1>Kadunud looma andmed</h1>
 
 <div class="col-sm-6">
-    @helper.form(action = routes.Lost.insert, 'class->"form-horizontal", 'role->"form") {
-    @_form(lostForm){
-    <button type="submit" class="btn btn-default">Salvesta</button>
-    }
+    @helper.form(action = routes.Lost.insert,
+                    'class->"form-horizontal",
+                    'role->"form",
+                    'enctype -> "multipart/form-data") {
+        @_form(lostForm){
+            <button type="submit" class="btn btn-default">Salvesta</button>
+        }
     }
 </div>
 
